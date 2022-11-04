@@ -3,18 +3,29 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pdd/helpers/route.dart';
 import 'package:pdd/model/ticket.dart';
 
-class Training extends StatelessWidget {
-  List<Ticket> ticket = [
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-  ];
+class Training extends StatefulWidget {
+  @override
+  State<Training> createState() => _TrainingState();
+}
+
+class _TrainingState extends State<Training> {
+  List<List<Question>> tickets = [];
+  @override
+  void initState() {
+    _getTickets();
+    super.initState();
+  }
+
+  void _getTickets() async {
+    for (var count = 1; count < 41; count++) {
+      var ticket = await DefaultAssetBundle.of(context).loadString(
+        'assets/pdd/questions/A_B/tickets/Билет $count.json',
+      );
+      // print(ticket);
+      tickets.add(questionFromJson(ticket));
+    }
+    setState(() {});
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -24,88 +35,70 @@ class Training extends StatelessWidget {
       fontWeight: FontWeight.w400,
     );
 
-    return Material(
-      child: SafeArea(
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                GestureDetector(
-                  onTap: () => Navigator.of(context).pop(),
-                  child: Container(
-                    color: Colors.transparent,
-                    width: 50,
-                    height: 50,
-                    child: Icon(
-                      Icons.chevron_left,
-                      size: 50.h,
-                    ),
-                  ),
-                ),
-                Text(
-                  'Билеты ПДД',
-                  style: textStyle1,
-                ),
-                const SizedBox(
-                  width: 50,
-                  height: 50,
-                )
-              ],
-            ),
-            SizedBox(height: 50.h),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 15.w),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: ticket.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: ((context, index) {
-                      return Padding(
-                        padding: EdgeInsets.only(bottom: 15.h),
-                        child: GestureDetector(
-                          onTap: () => Navigator.of(context)
-                              .pushNamed(AppRouter.startTest),
-                          child: Container(
-                            height: 80.h,
-                            padding: EdgeInsets.all(20.h),
-                            decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(20.r)),
-                            child: Row(
-                              children: [
-                                SizedBox(
-                                  width: 20.w,
-                                  child: Text(
-                                    '${index + 1}',
-                                    style: textStyle1,
-                                  ),
-                                ),
-                                VerticalDivider(
-                                  width: 12.w,
-                                  color: Colors.black,
-                                ),
-                                SizedBox(
-                                  width: 10.w,
-                                ),
-                                Text(
-                                  ticket[index].title,
-                                  style: textStyle1,
-                                ),
-                              ],
-                            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(
+          'Билеты ПДД',
+          style: textStyle1,
+        ),
+        backgroundColor: Colors.white.withOpacity(0),
+        foregroundColor: Colors.black,
+        elevation: 0,
+      ),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 15.h),
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: tickets.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: ((context, index) {
+                    return Padding(
+                      padding: EdgeInsets.only(bottom: 15.h),
+                      child: GestureDetector(
+                        onTap: () => Navigator.of(context).pushNamed(
+                            AppRouter.startTest,
+                            arguments: tickets[index]),
+                        child: Container(
+                          height: 80.h,
+                          padding: EdgeInsets.all(20.h),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(20.r)),
+                          child: Row(
+                            children: [
+                              // SizedBox(
+                              //   width: 20.w,
+                              //   child: Text(
+                              //     '${index + 1}',
+                              //     style: textStyle1,
+                              //   ),
+                              // ),
+                              // VerticalDivider(
+                              //   width: 12.w,
+                              //   color: Colors.black,
+                              // ),
+                              SizedBox(
+                                width: 10.w,
+                              ),
+                              Text(
+                                tickets[index].first.ticketNumber,
+                                style: textStyle1,
+                              ),
+                            ],
                           ),
                         ),
-                      );
-                    }),
-                  ),
+                      ),
+                    );
+                  }),
                 ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

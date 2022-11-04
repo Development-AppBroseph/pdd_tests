@@ -4,16 +4,16 @@ import 'package:pdd/helpers/route.dart';
 import 'package:pdd/model/ticket.dart';
 
 class ExamPage extends StatelessWidget {
-  List<Ticket> ticket = [
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
-    Ticket(title: 'Проверка знаний'),
+  List<Question> ticket = [
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
+    // Ticket(title: 'Проверка знаний'),
   ];
 
   @override

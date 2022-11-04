@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:pdd/model/question.dart';
+import 'package:pdd/model/ticket.dart';
 import 'package:pdd/ui/main_common.dart';
 import 'package:pdd/ui/training/exam/exam.dart';
 import 'package:pdd/ui/training/result/result_page.dart';
@@ -24,9 +24,14 @@ class AppRouter {
       case exam:
         return MaterialPageRoute(builder: (_) => ExamPage());
       case startTest:
-        return MaterialPageRoute(builder: (_) => StartTestPage());
-      case startExam:
-        return MaterialPageRoute(builder: (_) => StartExamPage());
+        List<Question> values = route.arguments as List<Question>;
+        return MaterialPageRoute(
+          builder: (_) => StartTestPage(
+            questions: values,
+          ),
+        );
+      // case startExam:
+      //   return MaterialPageRoute(builder: (_) => StartExamPage());
       case result:
         List<Question> value = route.arguments as List<Question>;
         return MaterialPageRoute(builder: (_) => ResultPage(question: value));

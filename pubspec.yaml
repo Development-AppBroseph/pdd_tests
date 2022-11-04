@@ -6,7 +6,7 @@ publish_to: 'none'
 version: 1.0.0+1
 
 environment:
-  sdk: '>=2.18.1 <3.0.0'
+  sdk: '>=2.17.1 <3.0.0'
 
 dependencies:
   flutter:
@@ -24,6 +24,7 @@ dependencies:
   flutter_bloc: ^8.0.1
   overlay_support: ^2.0.1
 
+
 dev_dependencies:
   flutter_test:
     sdk: flutter
@@ -36,7 +37,13 @@ flutter:
   assets:
     - assets/images/
     - assets/icons/
-  #   - images/a_dot_ham.jpeg
+    # - assets/pdd/images/A_B/
+    # - assets/pdd/images/C_D/
+    # - assets/pdd/questions/A_B/tickets/
+    # - assets/pdd/questions/A_B/topics/
+    # - assets/pdd/questions/C_D/tickets/
+    # - assets/pdd/questions/C_D/topics/
+
 
   # fonts:
   #   - family: Schyler

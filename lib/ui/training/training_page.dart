@@ -12,7 +12,7 @@ class TrainingPage extends StatelessWidget {
       color: Colors.white,
       fontSize: 19,
       fontWeight: FontWeight.w600,
-      fontStyle: FontStyle.italic,
+      fontStyle: FontStyle.normal,
     );
 
     TextStyle textStyle1 = const TextStyle(
@@ -47,14 +47,14 @@ class TrainingPage extends StatelessWidget {
                         text: TextSpan(
                           children: [
                             const TextSpan(
-                              text: '529 ',
+                              text: '423 ',
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: Colors.black,
                               ),
                             ),
                             TextSpan(
-                                text: '/1022',
+                                text: '/800',
                                 style: TextStyle(
                                     fontStyle: FontStyle.italic,
                                     color: Colors.grey[400])),

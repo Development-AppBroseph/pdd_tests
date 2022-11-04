@@ -4,8 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:pdd/core/bloc/training_exam/training_exam_bloc.dart';
 import 'package:pdd/helpers/route.dart';
 import 'package:pdd/model/question.dart';
+import 'package:pdd/model/ticket.dart';
 
 class StartTestPage extends StatefulWidget {
+  final List<Question> questions;
+
+  const StartTestPage({super.key, required this.questions});
   @override
   State<StartTestPage> createState() => _StartTestPageState();
 }
@@ -13,54 +17,16 @@ class StartTestPage extends StatefulWidget {
 class _StartTestPageState extends State<StartTestPage> {
   PageController pageController = PageController();
   int currentIndex = 0;
+  ScrollController _questionComtroller = ScrollController();
 
-  List<Question> question = [
-    Question(
-      image: 'image',
-      question: 'Как меня зовут?',
-      answer: {
-        'Дима': false,
-        'Олег': true,
-        'Алёша': false,
-      },
-    ),
-    Question(
-      image: 'image',
-      question: 'Столица мира?',
-      answer: {
-        'Москва': false,
-        'Волковысск': false,
-        'ХМАО': true,
-      },
-    ),
-    Question(
-      image: 'image',
-      question: 'В чем сила брат?',
-      answer: {
-        'Деньгах': false,
-        'Правде': true,
-        'Власти': false,
-      },
-    ),
-    Question(
-      image: 'image',
-      question: 'Как меня зовут?',
-      answer: {
-        'Дима': false,
-        'Олег': true,
-        'Алёша': false,
-      },
-    ),
-    Question(
-      image: 'image',
-      question: 'Столица мира?',
-      answer: {
-        'Москва': false,
-        'Волковысск': false,
-        'ХМАО': true,
-      },
-    ),
-  ];
+  @override
+  void dispose() {
+    print('dispose');
+    widget.questions.forEach((element) {
+      element.state = null;
+    });
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -77,146 +43,158 @@ class _StartTestPageState extends State<StartTestPage> {
 
     return BlocProvider<TrainingTestBloc>(
       create: (context) => TrainingTestBloc(),
-      child: Material(
-        child: SafeArea(
-          child: Column(
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      color: Colors.transparent,
-                      width: 50,
-                      height: 50,
-                      child: Icon(
-                        Icons.clear,
-                        size: 30.h,
-                      ),
-                    ),
-                  ),
-                  Text(
-                    'Билет №..',
-                    style: textStyle1,
-                  ),
-                  const SizedBox(
-                    width: 50,
-                    height: 50,
-                  )
-                ],
-              ),
-              SizedBox(height: 50.h),
-              SizedBox(
-                height: 50.h,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: question.length,
-                  itemBuilder: ((context, index) {
-                    return BlocBuilder<TrainingTestBloc, TrainingState>(
-                      buildWhen: (previous, current) {
-                        return true;
-                      },
-                      builder: (context, snapshot) {
-                        return Padding(
-                          padding: EdgeInsets.only(
-                              left: 20.w,
-                              right: index == question.length - 1 ? 20.w : 0),
-                          child: GestureDetector(
-                            onTap: question[index].state == null
-                                ? () {
-                                    currentIndex = index;
-                                    jumpPage(index);
-                                  }
-                                : null,
-                            child: Container(
-                              width: 50.h,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10.r),
-                                color: question[index].state == null
-                                    ? Colors.white
-                                    : question[index].state!
-                                        ? Colors.green[300]
-                                        : Colors.red[300],
-                              ),
-                              child: Center(
-                                child: Text(
-                                  '${index + 1}',
-                                  style: textStyle2,
+      child: Scaffold(
+        backgroundColor: Colors.white,
+        appBar: AppBar(
+          backgroundColor: Colors.white,
+          elevation: 0,
+          foregroundColor: Colors.black,
+          title: Text(
+            widget.questions.first.ticketNumber,
+            style: textStyle1,
+          ),
+        ),
+        body: Column(
+          children: [
+            Container(
+              color: Colors.white,
+              height: 70.h,
+              child: ListView.builder(
+                scrollDirection: Axis.horizontal,
+                itemCount: widget.questions.length,
+                controller: _questionComtroller,
+                itemBuilder: ((context, index) {
+                  return BlocBuilder<TrainingTestBloc, TrainingState>(
+                    buildWhen: (previous, current) {
+                      return true;
+                    },
+                    builder: (context, snapshot) {
+                      return Padding(
+                        padding: EdgeInsets.only(
+                          left: 20.w,
+                          right:
+                              index == widget.questions.length - 1 ? 20.w : 0,
+                        ),
+                        child: GestureDetector(
+                          onTap: () {
+                            // if ((widget.questions[currentIndex].state != null &&
+                            //         currentIndex + 1 == index) ||
+                            //     index < currentIndex) {
+                            currentIndex = index;
+                            setState(() {});
+                            jumpPage(index);
+                            if (index < 17) {
+                              _questionComtroller.animateTo(
+                                  (70 * index - 240).toDouble(),
+                                  duration: Duration(milliseconds: 1000),
+                                  curve: Curves.easeInOutQuint);
+                              // }
+                            }
+                          },
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                width: 50.h,
+                                height: 50.h,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10.r),
+                                  color: widget.questions[index].state == null
+                                      ? Colors.grey[100]
+                                      : widget.questions[index].state!
+                                          ? Colors.green[300]
+                                          : Colors.red[300],
+                                ),
+                                child: Center(
+                                  child: Text(
+                                    '${index + 1}',
+                                    style: textStyle2.copyWith(
+                                        color: widget.questions[index].state ==
+                                                null
+                                            ? Colors.black
+                                            : Colors.white),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        );
-                      },
-                    );
-                  }),
-                ),
+                        ),
+                      );
+                    },
+                  );
+                }),
               ),
-              SizedBox(height: 10.h),
-              Expanded(
-                child: Stack(
-                  children: [
-                    PageView(
-                      controller: pageController,
-                      physics: const NeverScrollableScrollPhysics(),
-                      children:
-                          question.map((e) => ItemTest(question: e)).toList(),
-                    ),
-                    BlocBuilder<TrainingTestBloc, TrainingState>(
-                        buildWhen: (previous, current) {
-                      return true;
-                    }, builder: (context, snapshot) {
-                      if (question[currentIndex].state != null) {
-                        return Align(
-                          alignment: Alignment.bottomCenter,
-                          child: GestureDetector(
-                            onTap: (() {
-                              if (currentIndex == question.length - 1) {
-                                Navigator.of(context).pushNamed(
-                                    AppRouter.result,
-                                    arguments: question);
-                              } else {
-                                jumpPage(++currentIndex);
-                                BlocProvider.of<TrainingTestBloc>(context)
-                                    .add(AnswerEvents());
-                              }
-                            }),
-                            child: Container(
-                              height: 60.h,
-                              color: question[currentIndex].state!
-                                  ? Colors.green[300]
-                                  : Colors.red[300],
-                              child: Center(
-                                child: question[currentIndex].state!
-                                    ? Text(
-                                        'Правильно',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w700,
-                                        ),
-                                      )
-                                    : Text(
-                                        'Неправильно',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20.sp,
-                                          fontWeight: FontWeight.w700,
-                                        ),
+            ),
+            SizedBox(height: 10.h),
+            Expanded(
+              child: Stack(
+                children: [
+                  PageView(
+                    controller: pageController,
+                    physics: const NeverScrollableScrollPhysics(),
+                    children: widget.questions
+                        .map((e) => ItemTest(question: e))
+                        .toList(),
+                  ),
+                  BlocBuilder<TrainingTestBloc, TrainingState>(
+                      buildWhen: (previous, current) {
+                    return true;
+                  }, builder: (context, snapshot) {
+                    if (widget.questions[currentIndex].state != null) {
+                      return Align(
+                        alignment: Alignment.bottomCenter,
+                        child: GestureDetector(
+                          onTap: (() {
+                            if (currentIndex == widget.questions.length - 1) {
+                              Navigator.of(context).pushNamed(AppRouter.result,
+                                  arguments: widget.questions);
+                            } else {
+                              jumpPage(++currentIndex);
+                              BlocProvider.of<TrainingTestBloc>(context)
+                                  .add(AnswerEvents());
+                            }
+                          }),
+                          child: Container(
+                            height: 60.h,
+                            margin: const EdgeInsets.only(
+                              bottom: 40,
+                              right: 15,
+                              left: 15,
+                            ),
+                            decoration: BoxDecoration(
+                                color: widget.questions[currentIndex].state!
+                                    ? Colors.green[300]
+                                    : Colors.red[300],
+                                borderRadius: BorderRadius.circular(15)),
+                            child: Center(
+                              child: widget.questions[currentIndex].state!
+                                  ? Text(
+                                      'Продолжить',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w700,
                                       ),
-                              ),
+                                    )
+                                  : Text(
+                                      'Продолжить',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 20.sp,
+                                        fontWeight: FontWeight.w700,
+                                      ),
+                                    ),
                             ),
                           ),
-                        );
-                      }
-                      return const SizedBox();
-                    })
-                  ],
-                ),
-              )
-            ],
-          ),
+                        ),
+                      );
+                    }
+                    return const SizedBox();
+                  })
+                ],
+              ),
+            )
+          ],
         ),
       ),
     );
@@ -233,90 +211,133 @@ class ItemTest extends StatelessWidget {
   ItemTest({required this.question});
   @override
   Widget build(BuildContext context) {
+    print(question.state);
     TextStyle textStyle1 = const TextStyle(
       color: Colors.black,
-      fontSize: 20,
-      fontWeight: FontWeight.w400,
+      fontSize: 17,
+      fontWeight: FontWeight.w600,
     );
+    print(question.image);
 
     return Padding(
       padding: EdgeInsets.symmetric(horizontal: 15.w),
-      child: Column(
-        children: [
-          SizedBox(height: 30.h),
-          Image.asset('assets/images/prev_question.webp'),
-          Text(
-            question.question,
-            style: textStyle1,
-          ),
-          SizedBox(
-            height: 30.h,
-          ),
-          Expanded(
-            child: ListView.builder(
-              scrollDirection: Axis.vertical,
-              itemCount: question.answer.length,
-              itemBuilder: (context, index) {
-                return BlocBuilder<TrainingTestBloc, TrainingState>(
-                    buildWhen: (previous, current) {
-                  return true;
-                }, builder: (context, snapshot) {
-                  return Padding(
-                    padding: EdgeInsets.only(bottom: 20.h),
-                    child: GestureDetector(
-                      onTap: () {
-                        if (question.state == null) {
-                          if (question.answer.values.elementAt(index)) {
-                            question.state = true;
-                          } else {
-                            question.state = false;
-                          }
-                          choice = index;
-                          BlocProvider.of<TrainingTestBloc>(context)
-                              .add(AnswerEvents());
-                        }
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(20.h),
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10.r),
-                            color: question.state != null
-                                ? question.answer.values.elementAt(index)
-                                    ? Colors.green[300]
-                                    : Colors.red[300]
-                                : null),
-                        child: Row(
-                          children: [
-                            Text(
-                              '${index + 1}',
-                            ),
-                            VerticalDivider(
-                              width: 12.w,
-                              color: Colors.black,
-                            ),
-                            SizedBox(
-                              width: 10.w,
-                            ),
-                            Text(
-                              question.answer.keys.elementAt(index),
-                            ),
-                            const Spacer(),
-                            choice != null && index == choice
-                                ? const Icon(
-                                    Icons.done,
-                                    color: Colors.white,
-                                    size: 15,
-                                  )
-                                : const SizedBox()
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                });
-              },
+      child: CustomScrollView(
+        slivers: [
+          SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+          if (!question.image.contains('no_image'))
+            SliverToBoxAdapter(
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(15),
+                child: Image.asset(question.image),
+              ),
+            ),
+          if (!question.image.contains('no_image'))
+            SliverToBoxAdapter(
+              child: SizedBox(
+                height: 30.h,
+              ),
+            ),
+          SliverToBoxAdapter(
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20, left: 5),
+              child: Text(
+                question.question,
+                style: textStyle1,
+                textAlign: TextAlign.left,
+              ),
             ),
           ),
+          SliverToBoxAdapter(child: SizedBox(height: 30.h)),
+          SliverList(
+            delegate: SliverChildBuilderDelegate(
+                childCount: question.answers.length, (context, index) {
+              return BlocBuilder<TrainingTestBloc, TrainingState>(
+                  buildWhen: (previous, current) {
+                return true;
+              }, builder: (context, snapshot) {
+                return Padding(
+                  padding: EdgeInsets.only(bottom: 20.h),
+                  child: GestureDetector(
+                    onTap: () {
+                      if (question.state == null) {
+                        if (question.answers[index].isCorrect) {
+                          question.state = true;
+                        } else {
+                          question.state = false;
+                        }
+                        choice = index;
+                        BlocProvider.of<TrainingTestBloc>(context)
+                            .add(AnswerEvents());
+                      }
+                    },
+                    child: Container(
+                      padding: EdgeInsets.all(20.h),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10.r),
+                        color: question.state != null
+                            ? question.answers[index].isCorrect
+                                ? Colors.green[300]
+                                : Colors.red[100]
+                            : Colors.grey[100],
+                      ),
+                      child: Row(
+                        children: [
+                          VerticalDivider(
+                            width: 5.w,
+                            color: Colors.black,
+                          ),
+                          Text(
+                            '${index + 1}.',
+                            style: const TextStyle(
+                              fontSize: 15,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          VerticalDivider(
+                            width: 5.w,
+                            color: Colors.black,
+                          ),
+                          SizedBox(
+                            width: 10.w,
+                          ),
+                          Container(
+                            // margin: EdgeInsets.only(right: 100),
+                            width: MediaQuery.of(context).size.width - 130,
+                            child: Text(
+                              question.answers[index].answerText,
+                              maxLines: 10,
+                              style: const TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w400,
+                              ),
+                            ),
+                          ),
+                          const Spacer(),
+                          choice != null && index == choice
+                              ? const Icon(
+                                  Icons.done,
+                                  color: Colors.white,
+                                  size: 15,
+                                )
+                              : const SizedBox()
+                        ],
+                      ),
+                    ),
+                  ),
+                );
+              });
+            }),
+          ),
+          if (question.state != null)
+            SliverToBoxAdapter(
+              child: Text(
+                question.answerTip,
+                style: const TextStyle(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w400,
+                ),
+              ),
+            )
         ],
       ),
     );

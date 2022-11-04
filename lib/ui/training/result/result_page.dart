@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pdd/helpers/route.dart';
 import 'package:pdd/model/question.dart';
+import 'package:pdd/model/ticket.dart';
 
 class ResultPage extends StatefulWidget {
   List<Question> question;
