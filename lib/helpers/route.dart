@@ -3,7 +3,6 @@ import 'package:pdd/model/ticket.dart';
 import 'package:pdd/ui/main_common.dart';
 import 'package:pdd/ui/training/exam/exam.dart';
 import 'package:pdd/ui/training/result/result_page.dart';
-import 'package:pdd/ui/training/exam/start_exam.dart';
 import 'package:pdd/ui/training/test/start_test.dart';
 import 'package:pdd/ui/training/test/training.dart';
 

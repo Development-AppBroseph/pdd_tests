@@ -39,7 +39,7 @@ flutter:
     - assets/icons/
     # - assets/pdd/images/A_B/
     # - assets/pdd/images/C_D/
-    # - assets/pdd/questions/A_B/tickets/
+    - assets/pdd/questions/A_B/tickets/
     # - assets/pdd/questions/A_B/topics/
     # - assets/pdd/questions/C_D/tickets/
     # - assets/pdd/questions/C_D/topics/
